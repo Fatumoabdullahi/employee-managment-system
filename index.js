@@ -63,3 +63,54 @@ function view() {
           console.log("default");
       }
     });
+  function viewAllEmployees() {
+    db.query(
+      "SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id",
+      function (err, results) {
+        if (err) throw err;
+        console.table(results);
+        start();
+      }
+    );
+  }
+
+  function viewByDepartment() {
+    db.query("SELECT  * FROM department", function (err, results) {
+      if (err) throw err;
+      console.table(results);
+      start();
+    });
+  }
+}
+function viewByrole() {
+  db.query("SELECT title FROM role", function (err, results) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "choice",
+          type: "rawlist",
+          choices: function () {
+            var choiceArr = [];
+            for (i = 0; i < results.length; i++) {
+              choiceArr.push(results[i].title);
+            }
+            return choiceArr;
+          },
+          message: "Select role",
+        },
+      ])
+      .then(function (answer) {
+        console.log(answer.choice);
+        db.query(
+          "SELECT e.id AS ID e.first_name AS FIRST, e.last_name AS Last, e.role_id AS Role, r.salary AS Salary, m.last_name AS Manager, d.name AS Department FROM employee e LEFT JOIN employee m ON e.manager_id LEFT JOIN role r ON e.role_id = r.title LEFT JOIN department d ON r.department_id = d.id WHERE e.role_id =?",
+          [answer.choice],
+          function (err, results) {
+            if (err) throw err;
+            console.table(results);
+            start();
+          }
+        );
+      });
+  });
+}
