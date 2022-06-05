@@ -196,3 +196,146 @@ function addEmployeeRole() {
         },
       },
     ])
+    .then(function (answer) {
+      db.query(
+        "INSERT INFO Role SET ?",
+        {
+          title: answer.role,
+          salary: answer.salary,
+          department_id: answer.department_id,
+        },
+        function (err) {
+          console.log("-----------------------------");
+          console.log("Employee Roles updated with" + answer.role);
+          console.log("-----------------------------");
+          start();
+        }
+      );
+    });
+  //add employee
+  function addEmployee() {
+    db.query("SELECT * FROM role", function (err, results) {
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            name: "firstName",
+            type: "input",
+            message: "Enter employee first name",
+          },
+          {
+            name: "lastName",
+            type: "input",
+            message: "Enter employee last name",
+          },
+          {
+            name: "role",
+            type: "rawlist",
+            choices: function () {
+              var choiceArr = [];
+              for (i = 0; i < results.length; i++) {
+                choiceArr.push(results.title);
+              }
+              return choiceArr;
+            },
+            message: "Select title",
+          },
+          {
+            name: "manager",
+            type: "number",
+            validate: function (value) {
+              if (isNaN(value) === false) {
+                return true;
+              }
+              return false;
+            },
+            message: "Enter manager ID",
+            default: "1",
+          },
+        ])
+        .then(function (answer) {
+          db.query("INSERT INFO employee SET?", {
+            first_name: answer.firstName,
+            last_name: answer.lastName,
+            role_id: answer.role,
+            manager_id: answer.manager,
+          });
+          console.log("---------------------------------"),
+            console.log("Employee Added Successfully"),
+            console.log("---------------------------------");
+          start();
+        });
+    });
+  }
+}
+//update employee
+function updateEmployee() {
+  db.query("SELECT * FROM employee", function (err, results) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "choices",
+          type: "rawlist",
+          choices: function () {
+            let choiceArr = [];
+            for (i = 0; i < results.length; i++) {
+              choiceArr.push(results[i].last_name);
+            }
+            return choiceArr;
+          },
+          message: "Select employee to update",
+        },
+      ])
+      .then(function (answer) {
+        const SaveName = answer.choice;
+
+        db.query("SELECT * FROM role", function (err, results) {
+          if (err) throw err;
+
+          inquirer
+            .prompt([
+              {
+                name: "role",
+                type: "rawlist",
+                choices: function () {
+                  var choiceArr = [];
+                  for (i = 0; i < results.length; i++) {
+                    choiceArr.push(results[i].title);
+                  }
+                  return choiceArr;
+                },
+                message: "Select title",
+              },
+              {
+                name: "manager",
+                type: "number",
+                validate: function (value) {
+                  if (isNaN(value) === false) {
+                    return true;
+                  }
+                  return false;
+                },
+                message: "Enter new manager ID",
+                default: "1",
+              },
+            ])
+            .then(function (answer) {
+              console.log(answer);
+              console.log(answer);
+              db.query("UPDATE employee SET ? WHERE last_name = ?", [
+                {
+                  role_id: answer.role,
+                  manager_id: answer.manager,
+                },
+                SaveName,
+              ]),
+                console.log("-------------------------------");
+              console.log("Employee updated");
+              console.log("-------------------------------");
+              start();
+            });
+        });
+      });
+  });
+}
