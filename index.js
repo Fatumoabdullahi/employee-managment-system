@@ -6,7 +6,7 @@ require("console.table");
 
 const db = require("./db/connection");
 
-// Basic functionality of application
+// functionality of application
 function start() {
   inquirer
     .prompt([
@@ -39,3 +39,27 @@ function start() {
     });
 }
 start();
+function view() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "view",
+        message: "Please select what information you would like to access",
+        choices: ["All employees", "By department", "By role"],
+      },
+    ])
+    .then(function (res) {
+      switch (res.view) {
+        case "All employees":
+          viewAllEmployees();
+          break;
+        case "By department":
+          viewByDepartment();
+          break;
+        case "By role":
+          viewByrole();
+        default:
+          console.log("default");
+      }
+    });
