@@ -138,3 +138,61 @@ function add() {
       }
     });
 }
+//add department
+function addDepartment() {
+  //prompt
+  inquirer
+    .prompt([
+      {
+        name: "department",
+        type: "input",
+        message: "what would you like the department name to be?",
+      },
+    ])
+    .then(function (answer) {
+      db.query(
+        "INSERT INTO department(name) VALUES (?)",
+        [answer.department],
+        function (err) {
+          if (err) throw err;
+          console.log("-----------------------------");
+          console.log("Department updated with" + answer.department);
+          console.log("-----------------------------");
+          start();
+        }
+      );
+    });
+}
+//add employee role
+function addEmployeeRole() {
+  //prompt
+  inquirer
+    .prompt([
+      {
+        name: "role",
+        type: "input",
+        message: "Enter role title",
+      },
+      {
+        name: "salary",
+        type: "number",
+        message: "Enter salary",
+        validate: function (value) {
+          if (isNaN(value) === false) {
+            return true;
+          }
+          return false;
+        },
+      },
+      {
+        name: "department_id",
+        type: "number",
+        message: "Enter department_id",
+        validate: function (value) {
+          if (isNaN(value) === false) {
+            return true;
+          }
+          return false;
+        },
+      },
+    ])
