@@ -10,4 +10,4 @@ GIVEN a command-line application that accepts user input WHEN I start the applic
 
 ## Video
 
-Click <a href="">here </a> to watch a walkthrough video of the application.
+Click <a href="https://drive.google.com/file/d/1WLOVojJkCT0gmykVoBKiuH45FhtV5yCm/view?usp=sharing">here </a> to watch a walkthrough video of the application.
